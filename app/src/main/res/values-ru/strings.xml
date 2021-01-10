@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_dashboard">Статистика</string>
+    <string name="title_notifications">Настройки</string>
+    <string name="title_home">Главный экран</string>
+</resources>
