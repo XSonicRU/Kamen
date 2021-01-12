@@ -3,7 +3,16 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Stats</string>
     <string name="title_notifications">Settings</string>
-    <string name="button_value_on">Put Mask On</string>
-    <string name="button_value_off">Put Mask Off</string>
+    <string name="button_value_on">Put the mask on</string>
+    <string name="button_value_off">Put the mask off</string>
     <string name="wearing_label_full">You were wearing a mask for%1$s%2$s%3$s</string>
+    <string name="limit_title">Mask wear limit(in minutes)</string>
+    <string name="limit_summary">Rospotrebnadzor recommends changing your mask every 2–3 hours</string>
+    <string name="mask_mode_title">Sum mask usage instead of resetting it</string>
+    <string name="mask_usage_sum">Useful if you plan on using your mask in small periods</string>
+    <!-- Preference Titles -->
+
+    <!-- Messages Preferences -->
+
+    <!-- Sync Preferences -->
 </resources>
