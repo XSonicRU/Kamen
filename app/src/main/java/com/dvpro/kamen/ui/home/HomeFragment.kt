@@ -16,40 +16,62 @@ import androidx.lifecycle.ViewModelProvider
 import com.dvpro.kamen.Data
 import com.dvpro.kamen.R
 import java.time.Instant
+import java.util.*
 import java.util.prefs.Preferences
+import kotlin.concurrent.fixedRateTimer
+import kotlin.math.log10
 
 class HomeFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
-
+    private var statusLabel: TextView? = null
+    private var curtimer: Timer? = null
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
         val button: Button = root.findViewById(R.id.button)
+        statusLabel = root.findViewById(R.id.text_home)
         button.setOnClickListener {
             if (Data.TrackingStatus == -1L) {
-                button.text = resources.getText(R.string.button_value_on)
+                startTracking(button)
                 Data.TrackingStatus = System.currentTimeMillis()
             } else {
-                button.text = resources.getText(R.string.button_value_off)
+                button.text = getString(R.string.button_value_on)
+                //TODO: вызов сохранения в стату
+                Data.TrackingStatus = -1L
             }
         }
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            //textView.text = it
-        })
+        val sp = requireContext().getSharedPreferences("settings", MODE_PRIVATE)
+        Data.TrackingStatus = sp.getLong("TrackingStatus", -1)
+        if(Data.TrackingStatus!=-1L){
+            startTracking(button)
+        }
         return root
     }
 
-    override fun onResume() {
-        super.onResume()
-        val sp = requireContext().getSharedPreferences("settings", MODE_PRIVATE);
-        sp.getInt("TrackingStatus", -1)
+    private fun startTracking(button:Button) : Timer{
+        button.text = getString(R.string.button_value_off)
+        return fixedRateTimer("timer", false, 0L, 1000) {
+            activity?.runOnUiThread {
+                if (Data.TrackingStatus != -1L) {
+                    val t: Long = (System.currentTimeMillis() - Data.TrackingStatus) / 1000
+                    val hrs = t / 3600
+                    val min = (t - hrs * 60) / 60
+                    val sec = t - min * 60
+                    if (Locale.getDefault().displayLanguage == "русский") {
+                        statusLabel!!.text = getString(R.string.wearing_label_full, if (hrs > 0) " " + Data.choosePluralMerge(hrs, "час", "часа", "часов") else "",
+                                if (min > 0) " " + Data.choosePluralMerge(min, "минуту", "минуты", "минут") else "",
+                                " " + Data.choosePluralMerge(sec, "секунду", "секунды", "секунд"))
+                    } else {
+                        statusLabel!!.text = getString(R.string.wearing_label_full, if (hrs > 0) (if ((hrs.toString()[hrs.toString().length - 1] == '1') && (hrs != 11L)) " $hrs hour" else " $hrs hours") else "",
+                                if (min > 0) (if ((min.toString()[min.toString().length - 1] == '1') && (min != 11L)) " $min minute" else " $min minutes") else "",
+                                if ((sec.toString()[sec.toString().length - 1] == '1') && (sec != 11L)) " $sec second" else " $sec seconds")
 
+                    }
+                }
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@
     <string name="title_dashboard">Статистика</string>
     <string name="title_notifications">Настройки</string>
     <string name="title_home">Главный экран</string>
-    <string name="button_value_on">Одеть маску</string>
+    <string name="button_value_on">Надеть маску</string>
     <string name="button_value_off">Снять маску</string>
+    <string name="wearing_label_full">"Вы носите маску%1$s%2$s%3$s "</string>
 </resources>
