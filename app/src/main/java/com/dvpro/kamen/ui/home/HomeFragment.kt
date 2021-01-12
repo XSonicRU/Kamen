@@ -28,7 +28,7 @@ import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
 class HomeFragment : Fragment() {
-
+    private var isNotifSent: Boolean = false
     private var statusLabel: TextView? = null
     private var curtimer: Timer? = null
     override fun onCreateView(
@@ -83,7 +83,12 @@ class HomeFragment : Fragment() {
                         if ((sec.toString()[sec.toString().length - 1] == '1') && (sec != 11L)) " $sec second" else " $sec seconds")
             }
             val maskState = t < Data.getMaskWearLimit()
-            show_notification(output, if (maskState) getString(R.string.good_mask_state) else (getString(R.string.bad_mask_state)), requireContext(), true, 0)
+            var alertonce = true
+            if(!maskState && !isNotifSent){
+                alertonce = false
+                isNotifSent = true
+            }
+            show_notification(output, if (maskState) getString(R.string.good_mask_state) else (getString(R.string.bad_mask_state)), requireContext(), true, 0,alertonce)
             activity?.runOnUiThread {
                 statusLabel!!.setTextColor(if (maskState)Color.GREEN else Color.RED)
                 statusLabel!!.text = output
@@ -91,13 +96,13 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun show_notification(content: String?, title: String?, c: Context, perm: Boolean, id: Int) {
+    fun show_notification(content: String?, title: String?, c: Context, perm: Boolean, id: Int, alertOnce:Boolean) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             val builder = Notification.Builder(c)
                     .setSmallIcon(R.drawable.ic_baseline_masks_24)
                     .setContentTitle(title)
                     .setContentText(content)
-                    .setOnlyAlertOnce(true)
+                    .setOnlyAlertOnce(alertOnce)
                    // .addAction(action)
                     .setOngoing(perm)
             val nm = NotificationManagerCompat.from(c)
@@ -107,7 +112,7 @@ class HomeFragment : Fragment() {
                     .setSmallIcon(R.drawable.ic_baseline_masks_24)
                     .setContentTitle(title)
                     .setContentText(content)
-                    .setOnlyAlertOnce(true)
+                    .setOnlyAlertOnce(alertOnce)
                    // .addAction(action)
                     .setOngoing(perm)
             val nm = NotificationManagerCompat.from(c)
