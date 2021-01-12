@@ -10,4 +10,7 @@
     <string name="limit_summary">Роспотребнадзор рекомендует менять маску каждые 2-3 часа</string>
     <string name="mask_mode_title">Суммировать использование маски вместо сброса</string>
     <string name="mask_usage_sum">Будет суммировать таймер маски вместо того, чтобы сбрасывать его каждое использование</string>
+    <string name="channel_name">Уведомления о ношении маски</string>
+    <string name="good_mask_state">Маска в порядке</string>
+    <string name="bad_mask_state">Ваша маска изношена. Срочно замените её!</string>
 </resources>
