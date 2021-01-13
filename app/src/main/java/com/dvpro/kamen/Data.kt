@@ -1,6 +1,7 @@
 package com.dvpro.kamen
 
 import android.content.SharedPreferences
+import java.util.*
 
 import android.content.Context
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -19,6 +20,11 @@ object Data {
     fun getMaskWearLimit(): Int{
         return prefman?.getString("limit","120")!!.toInt()*60
     }
+
+    //Таймер отсчёта
+    var curtimer: Timer? = null
+
+    var sp : SharedPreferences? = null
 
     /* Выбирает правильную форму существительного в зависимости от числа.
     один-два-пять - один гвоздь, два гвоздя, пять гвоздей.
@@ -40,12 +46,11 @@ object Data {
 
     fun Base_create(days:Int,last_day_val:Int =0,context: Context){
         val sp = context.getSharedPreferences("settings_stats", Context.MODE_PRIVATE).edit()
-        val key_date   = arrayOfNulls<String>(days)
-        val calendar = Calendar.getInstance()
-        sp.putString(key_date[days-1],last_day_val as String)
-        key_date[key_date.size-1]=getDaysAgo(0) as String
+        val key_date = arrayOfNulls<String>(days)
+        sp.putString(key_date[days-1],last_day_val.toString())
+        key_date[key_date.size-1]=getDaysAgo(0).toString()
         for (i in 2..days){
-            key_date[days-i]= getDaysAgo(i-1) as String
+            key_date[days-i]= getDaysAgo(i-1).toString()
             sp.putString(key_date[days-i],"0")
         }
         sp.putStringSet("key_date", key_date.toMutableSet() ).apply()
@@ -58,23 +63,22 @@ object Data {
         val calendar = Calendar.getInstance()
         val j =Date_Check(calendar.time.toString(),context)
         if(j==0){
-            val today = sp.getString(mas!!.elementAt(mas.size-1), null)
+            val today = sp.getString(mas.elementAt(mas.size-1), null)
             for(i in 0 .. mas.size-1){
                 val k = sp.getString(mas.elementAt(i), null)
                 sp1.putString(mas.elementAt(i),k)
             }
-            sp1.putString(mas!!.elementAt(mas.size-1),(today!!.toInt() +time).toString() )
+            sp1.putString(mas.elementAt(mas.size-1),(today!!.toInt() +time).toString() )
         }
         else if(j > 0){
-            val calendar = Calendar.getInstance()
             for (i in 0 .. mas.size-j-1){ //перепроверь правильно ли вычитаешь!!!!!!!
-                val k = sp.getString(mas!!.elementAt(i), null)
+                val k = sp.getString(mas.elementAt(i), null)
                 sp1.putString(mas.elementAt(0),k)
             }
-            sp1.putString(mas!!.elementAt(mas.size-1),time.toString())
+            sp1.putString(mas.elementAt(mas.size-1),time.toString())
             mas[mas.size-1]=getDaysAgo(0).toString()
             for (i in 2..mas.size-j){
-                mas[mas.size-i]= getDaysAgo(i-1) as String
+                mas[mas.size-i]= getDaysAgo(i-1).toString()
                 sp1.putString(mas[mas.size-i],"0")
             }
 
