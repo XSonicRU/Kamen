@@ -13,8 +13,8 @@ object Data {
     // если не -1, то тут время начала, инициализируется при запуске
     var TrackingStatus: Long = -1
 
-    //Номер отслеживаемой маски, считаем с 1
-    var TrackingIndex: Int = 1
+    //Изношенность текущей выбранной маски
+    var CurMaskWear: Long = 0
 
     //SharedPreferences для получения настроек, инициализируется при запуске
     var prefman : SharedPreferences? = null

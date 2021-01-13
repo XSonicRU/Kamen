@@ -15,4 +15,6 @@
     <string name="bad_mask_state">Ваша маска изношена. Срочно замените её!</string>
     <string name="mask_label">Маска</string>
     <string name="mask_cnt_title">Количество масок</string>
+    <string name="wear_reset_button">Сбросить износ</string>
+    <string name="wear_label">Изношенность текущей маски:</string>
 </resources>
