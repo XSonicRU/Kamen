@@ -18,6 +18,7 @@
     <string name="wear_reset_button">Reset wear</string>
     <string name="wear_label">Current mask\' wear is</string>
     <string name="mask_perfect">Mask is 100% clean!</string>
+    <string name="quicksort_label_title">Sort stats</string>
     <!-- Preference Titles -->
 
     <!-- Messages Preferences -->

@@ -23,7 +23,7 @@ import java.util.Collections.swap
 
 
 class DashboardFragment : Fragment() {
-private var chart:  BarChart? =null
+    private var chart: BarChart? = null
     private lateinit var dashboardViewModel: DashboardViewModel
 
     override fun onCreateView(
@@ -35,31 +35,31 @@ private var chart:  BarChart? =null
                 ViewModelProvider(this).get(DashboardViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
         val textView: TextView = root.findViewById(R.id.text_dashboard)
-         chart =  root.findViewById<BarChart>(R.id.chart)
+        chart = root.findViewById<BarChart>(R.id.chart)
         dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
         })
         Make_chart(4, 14, requireContext())
         return root
     }
 
 
-
-    fun Make_chart(n: Int, days: Int, context: Context){
+    fun Make_chart(n: Int, days: Int, context: Context) {
         val sp = context.getSharedPreferences("settings_stats", Context.MODE_PRIVATE)
         val value = arrayListOf<String>()
         val key = arrayListOf<String>()
         val entries = arrayListOf<BarEntry>()
-        for (i in 0 .. days){
+        for (i in 0..days) {
             val q = Data.getDaysAgo(i)
             key.add(q)
-            val v =sp.getString(q, null)
+            val v = sp.getString(q, null)
             value.add(v.toString())
         }
-            quicksort(key,value,0,days.toLong())
+        if (Data.prefman!!.getBoolean("quicksort_enabled", false)) {
+            quicksort(key, value, 0, days.toLong())
+        }
 
-        for (i in 0..days ) {
-             entries.add(BarEntry(i.toFloat(), value[i]!!.toFloat() + 1000f))
+        for (i in 0..days) {
+            entries.add(BarEntry(i.toFloat(), (value[i]!!.toFloat())/60))
         }
         val barDataSet = BarDataSet(entries, "Cells")
         barDataSet.setColor(Color.RED)
@@ -73,10 +73,10 @@ private var chart:  BarChart? =null
 
     }
 
-    fun quicksort(key:ArrayList<String>,value:ArrayList<String>,first:Long,last:Long){
+    fun quicksort(key: ArrayList<String>, value: ArrayList<String>, first: Long, last: Long) {
         var f = first
         var l = last;
-        val mid = value[((first+last)/2).toInt()].toLong(); //?????????? ???????? ????????
+        val mid = value[((first + last) / 2).toInt()].toLong(); //?????????? ???????? ????????
         do {
             while (value[f.toInt()].toInt() < mid) f++
             while (value[l.toInt()].toInt() > mid) l--;
@@ -84,18 +84,17 @@ private var chart:  BarChart? =null
             {
                 val k = value[l.toInt()]
                 value[l.toInt()] = value[f.toInt()]
-                value[f.toInt()] =k
-                val q=key[l.toInt()]
-                key[l.toInt()]=key[f.toInt()]
-                key[f.toInt()] =q
+                value[f.toInt()] = k
+                val q = key[l.toInt()]
+                key[l.toInt()] = key[f.toInt()]
+                key[f.toInt()] = q
                 f++;
                 l--;
             }
         } while (f < l);
-        if (first < l) quicksort(key,value, first, l);
-        if (f < last) quicksort(key,value, f, last);
+        if (first < l) quicksort(key, value, first, l);
+        if (f < last) quicksort(key, value, f, last);
     }
-
 
 
 }

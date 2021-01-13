@@ -18,4 +18,8 @@
         android:title="@string/mask_cnt_title"
         app:summary="@string/limit_summary"
         app:useSimpleSummaryProvider="true" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="quicksort_enabled"
+        android:title="@string/quicksort_label_title" />
 </PreferenceScreen>

@@ -18,4 +18,5 @@
     <string name="wear_reset_button">Сбросить износ</string>
     <string name="wear_label">Изношенность текущей маски:</string>
     <string name="mask_perfect">Маска на 100% чистая!</string>
+    <string name="quicksort_label_title">Сортировать статистику</string>
 </resources>
