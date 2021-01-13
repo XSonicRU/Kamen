@@ -28,7 +28,7 @@ class DashboardFragment : Fragment() {
     ): View? {
         dashboardViewModel =
                 ViewModelProvider(this).get(DashboardViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_stats, container, false)
+        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
         val textView: TextView = root.findViewById(R.id.text_dashboard)
         dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
@@ -42,8 +42,8 @@ class DashboardFragment : Fragment() {
         //val qwe = arrayListOf<xAxis>()
         val entries = arrayListOf<BarEntry>()
         for (i in 0..days ) {
-             val q = i as Float
-             entries.add(BarEntry(1f, q))
+            // val q = i.toFloat()
+             entries.add(BarEntry(1f, i.toFloat()))
         }
         //val entries1 = revenueComp1.mapIndexed { index, arrayList ->
         //    Entry(index, arrayList[index]) }
