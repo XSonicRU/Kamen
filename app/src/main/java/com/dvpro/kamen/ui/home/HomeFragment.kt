@@ -1,20 +1,15 @@
 package com.dvpro.kamen.ui.home
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.dvpro.kamen.Data
@@ -22,9 +17,13 @@ import com.dvpro.kamen.R
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
+
 class HomeFragment : Fragment() {
     private var isNotifySent: Boolean = false
     private var statusLabel: TextView? = null
+    private var adviceLabel: TextView? = null
+
+    //private var progressBar: ProgressBar? = null
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -33,6 +32,26 @@ class HomeFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val button: Button = root.findViewById(R.id.button)
         statusLabel = root.findViewById(R.id.text_home)
+        adviceLabel = root.findViewById(R.id.text_home2)
+        val spinner = root.findViewById<Spinner>(R.id.spinner2)
+        Data.prefman = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val maskAmount = Data.prefman!!.getString("mask_amount", "1")!!.toInt()
+        val spinnerArray: MutableList<String> = ArrayList()
+        for (i in 1..maskAmount){
+            spinnerArray.add(getString(R.string.mask_label) + " $i")
+        }
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+                requireContext(), android.R.layout.simple_spinner_item, spinnerArray)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+            }
+        }
+        //progressBar = root.findViewById(R.id.progressBar)
         button.setOnClickListener {
             if (Data.TrackingStatus == -1L) {
                 Data.curtimer = startTracking(button)
@@ -41,14 +60,14 @@ class HomeFragment : Fragment() {
             } else {
                 Data.curtimer!!.cancel()
                 button.text = getString(R.string.button_value_on)
-                Data.Statistic_update((System.currentTimeMillis()-Data.getMaskWearLimit()/1000).toInt(),requireContext())
+                Data.Statistic_update(((System.currentTimeMillis() - Data.TrackingStatus) / 1000).toInt(), requireContext())
                 Data.sp!!.edit().putLong("TrackingStatus", -1L).apply()
                 NotificationManagerCompat.from(requireContext()).cancel(0)
                 Data.TrackingStatus = -1L
-                activity?.findViewById<TextView>(R.id.text_home)!!.visibility = View.INVISIBLE
+                statusLabel!!.visibility = View.INVISIBLE
+                adviceLabel!!.visibility = View.INVISIBLE
             }
         }
-        Data.prefman = PreferenceManager.getDefaultSharedPreferences(requireContext())
         if (Data.TrackingStatus != -1L) {
             Data.curtimer = startTracking(button)
         }
@@ -59,6 +78,7 @@ class HomeFragment : Fragment() {
         button.text = getString(R.string.button_value_off)
         isNotifySent = false
         statusLabel!!.findViewById<TextView>(R.id.text_home)!!.visibility = View.VISIBLE
+        adviceLabel!!.visibility = View.VISIBLE
         return fixedRateTimer("timer", false, 0L, 1000) {
             val t: Long = (System.currentTimeMillis() - Data.TrackingStatus) / 1000
             val hrs = t / 3600
@@ -76,26 +96,29 @@ class HomeFragment : Fragment() {
             }
             val maskState = t < Data.getMaskWearLimit()
             var alertonce = true
-            if(!maskState && !isNotifySent){
+            if (!maskState && !isNotifySent) {
                 alertonce = false
                 isNotifySent = true
             }
-            show_notification(output, if (maskState) getString(R.string.good_mask_state) else (getString(R.string.bad_mask_state)), requireContext(), true, 0,alertonce)
+            show_notification(output, if (maskState) getString(R.string.good_mask_state) else (getString(R.string.bad_mask_state)), requireContext(), true, 0, alertonce)
             activity?.runOnUiThread {
-                statusLabel!!.setTextColor(if (maskState)Color.GREEN else Color.RED)
+                //progressBar!!.progress = 100-((Data.getMaskWearLimit()-t)/Data.getMaskWearLimit().toDouble()*100).toInt()
+                adviceLabel!!.setTextColor(if (maskState) Color.GREEN else Color.RED)
+                adviceLabel!!.text = if (maskState) getString(R.string.good_mask_state) else (getString(R.string.bad_mask_state))
+                statusLabel!!.setTextColor(if (maskState) Color.GREEN else Color.RED)
                 statusLabel!!.text = output
             }
         }
     }
 
-    fun show_notification(content: String?, title: String?, c: Context, perm: Boolean, id: Int, alertOnce:Boolean) {
+    fun show_notification(content: String?, title: String?, c: Context, perm: Boolean, id: Int, alertOnce: Boolean) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             val builder = Notification.Builder(c)
                     .setSmallIcon(R.drawable.ic_baseline_masks_24)
                     .setContentTitle(title)
                     .setContentText(content)
                     .setOnlyAlertOnce(alertOnce)
-                   // .addAction(action)
+                    // .addAction(action)
                     .setOngoing(perm)
             val nm = NotificationManagerCompat.from(c)
             nm.notify(id, builder.build())
@@ -105,7 +128,7 @@ class HomeFragment : Fragment() {
                     .setContentTitle(title)
                     .setContentText(content)
                     .setOnlyAlertOnce(alertOnce)
-                   // .addAction(action)
+                    // .addAction(action)
                     .setOngoing(perm)
             val nm = NotificationManagerCompat.from(c)
             nm.notify(id, builder.build())

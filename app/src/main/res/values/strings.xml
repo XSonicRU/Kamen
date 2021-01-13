@@ -13,6 +13,8 @@
     <string name="channel_name">Mask Wear Notification</string>
     <string name="good_mask_state">So far so good! Your mask is still fine</string>
     <string name="bad_mask_state">Oh no! Be sure to change your mask</string>
+    <string name="mask_label">Mask</string>
+    <string name="mask_cnt_title">Mask amount</string>
     <!-- Preference Titles -->
 
     <!-- Messages Preferences -->

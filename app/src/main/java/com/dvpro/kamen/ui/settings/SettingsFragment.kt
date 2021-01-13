@@ -14,5 +14,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<EditTextPreference>("limit")?.setOnBindEditTextListener { editText: EditText ->
             editText.inputType = InputType.TYPE_CLASS_NUMBER
         }
+        findPreference<EditTextPreference>("mask_amount")?.setOnBindEditTextListener { editText: EditText ->
+            editText.inputType = InputType.TYPE_CLASS_NUMBER
+        }
     }
 }

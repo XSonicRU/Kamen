@@ -8,9 +8,14 @@
         android:singleLine="true"
         android:title="@string/limit_title"
         app:summary="@string/limit_summary" />
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="mask_usage_mode"
-        android:title="@string/mask_mode_title"
-        app:summary="@string/mask_usage_sum" />
+    <EditTextPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:defaultValue="1"
+        android:key="mask_amount"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/mask_cnt_title"
+        app:summary="@string/limit_summary"
+        app:useSimpleSummaryProvider="true" />
 </PreferenceScreen>
