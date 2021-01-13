@@ -6,4 +6,11 @@
     <string name="button_value_on">Надеть маску</string>
     <string name="button_value_off">Снять маску</string>
     <string name="wearing_label_full">"Вы носите маску%1$s%2$s%3$s "</string>
+    <string name="limit_title">Лимит ношения маски(в минутах)</string>
+    <string name="limit_summary">Роспотребнадзор рекомендует менять маску каждые 2-3 часа</string>
+    <string name="mask_mode_title">Суммировать использование маски вместо сброса</string>
+    <string name="mask_usage_sum">Будет суммировать таймер маски вместо того, чтобы сбрасывать его каждое использование</string>
+    <string name="channel_name">Уведомления о ношении маски</string>
+    <string name="good_mask_state">Маска в порядке</string>
+    <string name="bad_mask_state">Ваша маска изношена. Срочно замените её!</string>
 </resources>

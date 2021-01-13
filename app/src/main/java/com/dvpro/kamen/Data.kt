@@ -1,9 +1,19 @@
 package com.dvpro.kamen
 
+import android.content.SharedPreferences
+
 object Data {
     // Переменная для трекинга отслеживания, если -1, то отслеживание не запущено,
-    // если не -1, то тут время начала
-    var TrackingStatus: Long = -1;
+    // если не -1, то тут время начала, инициализируется при запуске
+    var TrackingStatus: Long = -1
+
+    //SharedPreferences для получения настроек, инициализируется при запуске
+    var prefman : SharedPreferences? = null
+
+    //Лимит ношения маски, в секундах, инициализируется при запуске
+    fun getMaskWearLimit(): Int{
+        return prefman?.getString("limit","120")!!.toInt()*60
+    }
 
     /* Выбирает правильную форму существительного в зависимости от числа.
     один-два-пять - один гвоздь, два гвоздя, пять гвоздей.
