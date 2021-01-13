@@ -5,4 +5,5 @@
     <string name="title_notifications">Settings</string>
     <string name="button_value_on">Put Mask On</string>
     <string name="button_value_off">Put Mask Off</string>
+    <string name="wearing_label_full">You were wearing a mask for%1$s%2$s%3$s</string>
 </resources>
