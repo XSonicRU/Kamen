@@ -13,6 +13,9 @@ object Data {
     // если не -1, то тут время начала, инициализируется при запуске
     var TrackingStatus: Long = -1
 
+    // Текущая отслеживаемая маска
+    var curTracking:Int = 1
+
     //Изношенность текущей выбранной маски
     var CurMaskWear: Long = 0
 
@@ -23,6 +26,9 @@ object Data {
     fun getMaskWearLimit(): Int{
         return prefman?.getString("limit","120")!!.toInt()*60
     }
+
+    //костыль.
+    var launchAquisition = false
 
     //Таймер отсчёта
     var curtimer: Timer? = null

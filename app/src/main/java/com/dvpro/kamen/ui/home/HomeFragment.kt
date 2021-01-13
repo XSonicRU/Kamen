@@ -53,6 +53,13 @@ class HomeFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if(Data.launchAquisition){
+                    Data.curTracking = spinner!!.selectedItemPosition
+                    Data.sp!!.edit().putInt("LastMask",Data.curTracking).apply()
+                }else{
+                    spinner!!.setSelection(Data.curTracking)
+                    Data.launchAquisition = true
+                }
                 onNewMaskSelection()
             }
         }
@@ -81,10 +88,9 @@ class HomeFragment : Fragment() {
             }
         }
         resetButton!!.setOnClickListener {
-            if (Data.TrackingStatus == -1L) {
-                adviceLabel!!.text = getGeneralOutput()
-                Data.CurMaskWear = 0
-            }
+            adviceLabel!!.text = getGeneralOutput()
+            Data.CurMaskWear = 0
+            //TODO
         }
         if (Data.TrackingStatus != -1L) {
             Data.curtimer = startTracking(button)
