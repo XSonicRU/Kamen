@@ -98,20 +98,24 @@ class HomeFragment : Fragment() {
     }
 
     private fun getGeneralOutput(): String {
-        val hrs = Data.CurMaskWear / 3600
-        val min = (Data.CurMaskWear - hrs * 3600) / 60
-        val sec = (Data.CurMaskWear - hrs * 3600) - min * 60
-        val output: String
-        if (Locale.getDefault().displayLanguage == "русский") {
-            output = ((if (hrs > 0) " " + Data.choosePluralMerge(hrs, "час", "часа", "часов") else "") +
-                    (if (min > 0) " " + Data.choosePluralMerge(min, "минута", "минуты", "минут") else "") +
-                    (" " + Data.choosePluralMerge(sec, "секунда", "секунды", "секунд")))
-        } else {
-            output = ((if (hrs > 0) (if ((hrs.toString()[hrs.toString().length - 1] == '1') && (hrs != 11L)) " $hrs hour" else " $hrs hours") else "") +
-                    (if (min > 0) (if ((min.toString()[min.toString().length - 1] == '1') && (min != 11L)) " $min minute" else " $min minutes") else "") +
-                    (if ((sec.toString()[sec.toString().length - 1] == '1') && (sec != 11L)) " $sec second" else " $sec seconds"))
+        if(Data.CurMaskWear != 0L){
+            val hrs = Data.CurMaskWear / 3600
+            val min = (Data.CurMaskWear - hrs * 3600) / 60
+            val sec = (Data.CurMaskWear - hrs * 3600) - min * 60
+            val output: String
+            if (Locale.getDefault().displayLanguage == "русский") {
+                output = ((if (hrs > 0) " " + Data.choosePluralMerge(hrs, "час", "часа", "часов") else "") +
+                        (if (min > 0) " " + Data.choosePluralMerge(min, "минута", "минуты", "минут") else "") +
+                        (" " + Data.choosePluralMerge(sec, "секунда", "секунды", "секунд")))
+            } else {
+                output = ((if (hrs > 0) (if ((hrs.toString()[hrs.toString().length - 1] == '1') && (hrs != 11L)) " $hrs hour" else " $hrs hours") else "") +
+                        (if (min > 0) (if ((min.toString()[min.toString().length - 1] == '1') && (min != 11L)) " $min minute" else " $min minutes") else "") +
+                        (if ((sec.toString()[sec.toString().length - 1] == '1') && (sec != 11L)) " $sec second" else " $sec seconds"))
+            }
+            return output
+        }else{
+            return getString(R.string.mask_perfect)
         }
-        return output
     }
 
     private fun onNewMaskSelection() {
