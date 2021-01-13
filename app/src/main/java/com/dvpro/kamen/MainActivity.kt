@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         Data.TrackingStatus = Data.sp!!.getLong("TrackingStatus", -1L)
         Data.curTracking = Data.sp!!.getInt("LastMask", 0)
         if (Data.sp!!.getInt("isFirst", -1) == -1) {
-            Data.Base_create(30, 0, this)
+            Data.Base_create(30,this)
             Data.sp!!.edit().putInt("isFirst", 1).apply()
         }
     }

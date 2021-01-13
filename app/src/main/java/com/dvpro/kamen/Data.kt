@@ -1,11 +1,13 @@
 package com.dvpro.kamen
 
-import android.content.SharedPreferences
-import java.util.*
-
+import android.annotation.SuppressLint
 import android.content.Context
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.content.SharedPreferences
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.github.mikephil.charting.data.BarEntry
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 object Data {
@@ -24,7 +26,7 @@ object Data {
 
     //Лимит ношения маски, в секундах, инициализируется при запуске
     fun getMaskWearLimit(): Int{
-        return prefman?.getString("limit","120")!!.toInt()*60
+        return prefman?.getString("limit", "120")!!.toInt()*60
     }
 
     //костыль.
@@ -53,48 +55,117 @@ object Data {
         return str
     }
 
-    fun Base_create(days:Int,last_day_val:Int =0,context: Context){
+
+
+
+
+
+
+
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun Base_create(days: Int, context: Context, last_day_val: Int = 0){
         val sp = context.getSharedPreferences("settings_stats", Context.MODE_PRIVATE).edit()
-        val key_date = arrayOfNulls<String>(days)
-        sp.putString(key_date[days-1],last_day_val.toString())
-        key_date[key_date.size-1]=getDaysAgo(0).toString()
+        sp.clear()
+        val t =getDaysAgo(0)
+        sp.putString(t, last_day_val.toString())
         for (i in 2..days){
-            key_date[days-i]= getDaysAgo(i-1).toString()
-            sp.putString(key_date[days-i],"0")
+            sp.putString(getDaysAgo(i - 1), "0")
         }
-        sp.putStringSet("key_date", key_date.toMutableSet() ).apply()
+        val d = LocalDate.now()
+        sp.putString("last_day", d.toString()).apply()
     }
 
-    fun Statistic_update(time: Int,context: Context){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun Statistic_update(time: Int, context: Context, days: Int = 30){
         val sp = context.getSharedPreferences("settings_stats", Context.MODE_PRIVATE)
-        val sp1 = sp.edit()
-        val mas = sp.getStringSet("key_date", null)!!.toTypedArray()
+
+                val sp1 = sp.edit()
+
+
         val calendar = Calendar.getInstance()
-        val j =Date_Check(calendar.time.toString(),context)
-        if(j==0){
-            val today = sp.getString(mas.elementAt(mas.size-1), null)
-            for(i in 0 .. mas.size-1){
-                val k = sp.getString(mas.elementAt(i), null)
-                sp1.putString(mas.elementAt(i),k)
+
+        val j = 5L//Date_Check(context)
+        val i =2
+
+        if(j == 0L){
+            val entries = arrayListOf<String>()
+            for(i in 1 .. days-1){
+                val t =getDaysAgo(i).toString()
+                val k =sp.getString(t, null)
+                entries.add(k.toString())
             }
-            sp1.putString(mas.elementAt(mas.size-1),(today!!.toInt() +time).toString() )
-        }
-        else if(j > 0){
-            for (i in 0 .. mas.size-j-1){ //перепроверь правильно ли вычитаешь!!!!!!!
-                val k = sp.getString(mas.elementAt(i), null)
-                sp1.putString(mas.elementAt(0),k)
+                     val t =getDaysAgo(0)
+            val k =sp.getString(t, null)
+            val p =sp.getString("last_day", null)
+            sp.edit().clear().apply()
+
+            if(k==null){
+                sp1.putString(t, time.toString())
             }
-            sp1.putString(mas.elementAt(mas.size-1),time.toString())
-            mas[mas.size-1]=getDaysAgo(0).toString()
-            for (i in 2..mas.size-j){
-                mas[mas.size-i]= getDaysAgo(i-1).toString()
-                sp1.putString(mas[mas.size-i],"0")
+            else{
+                val k1= ((k!!.toInt()) + time).toString()
+                sp1.putString(t, k1)
             }
 
-            sp1.putStringSet("key_date", mas.toMutableSet() ).apply()
+            for(i in 1 .. days-1){
+                val t =getDaysAgo(i).toString()
+               sp1.putString(t, entries[i-1])
+            }
+
+
+
+            sp1.putString("last_day",p).apply()
         }
+
+
+
+
+
+        else if(j < days){
+            for(i in j .. days-1){
+                val t =getDaysAgo(i.toInt()).toString()
+                val k =sp.getString(t, null)
+                sp1.putString(t, k)
+            }
+            for(i in 1..j-1){
+                val t =getDaysAgo(i.toInt()).toString()
+                sp1.putString(t, "0")
+            }
+            val t =getDaysAgo(0)
+            sp1.putString(t, time.toString())
+            val p =sp.getString("last_day", null)
+            sp.edit().clear().apply()
+            sp1.putString("last_day",p).apply()
+        }
+
+
+
         else{
-            Base_create(mas.size,time,context)
+            Base_create(days, context, time)
         }
 
 
@@ -102,24 +173,30 @@ object Data {
 
 
 
-    fun getDaysAgo(daysAgo: Int): Date {
+
+
+
+
+
+    fun getDaysAgo(daysAgo: Int): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, -daysAgo)
-        return calendar.time
+        val cal = calendar.get(Calendar.DATE).toString()
+        return cal
     }
 
 
-    fun Date_Check(day:String,context: Context): Int{ // возвращает есть ли день
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun Date_Check(context: Context): Long{ // возвращает есть ли день
         val sp = context.getSharedPreferences("settings_stats", Context.MODE_PRIVATE)
-        val mas = sp.getStringSet("key_date", null)
-        for(i in mas!!.size-1..0){
-            if(mas.elementAt(i)==day){
-                return i
-            }
-        }
-        return -1
-    }
+        val mas = sp.getString("last_day", null)
+
+        val d = LocalDate.now()
+        val mas1 = LocalDate.parse(mas)
+        val days = ChronoUnit.DAYS.between(d, mas1 )
 
 
+        return days
 
-}
+}}
