@@ -53,10 +53,10 @@ class HomeFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(Data.launchAquisition){
+                if (Data.launchAquisition) {
                     Data.curTracking = spinner!!.selectedItemPosition
-                    Data.sp!!.edit().putInt("LastMask",Data.curTracking).apply()
-                }else{
+                    Data.sp!!.edit().putInt("LastMask", Data.curTracking).apply()
+                } else {
                     spinner!!.setSelection(Data.curTracking)
                     Data.launchAquisition = true
                 }
@@ -88,9 +88,8 @@ class HomeFragment : Fragment() {
             }
         }
         resetButton!!.setOnClickListener {
-            adviceLabel!!.text = getGeneralOutput()
-            Data.CurMaskWear = 0
-            //TODO
+            Data.sp!!.edit().putLong("Mask " + spinner!!.selectedItemPosition, 0).apply()
+            onNewMaskSelection()
         }
         if (Data.TrackingStatus != -1L) {
             Data.curtimer = startTracking(button)
@@ -99,20 +98,24 @@ class HomeFragment : Fragment() {
     }
 
     private fun getGeneralOutput(): String {
-        val hrs = Data.CurMaskWear / 3600
-        val min = (Data.CurMaskWear - hrs * 3600) / 60
-        val sec = (Data.CurMaskWear - hrs * 3600) - min * 60
-        val output: String
-        if (Locale.getDefault().displayLanguage == "русский") {
-            output = ((if (hrs > 0) " " + Data.choosePluralMerge(hrs, "час", "часа", "часов") else "") +
-                    (if (min > 0) " " + Data.choosePluralMerge(min, "минута", "минуты", "минут") else "") +
-                    (" " + Data.choosePluralMerge(sec, "секунда", "секунды", "секунд")))
-        } else {
-            output = ((if (hrs > 0) (if ((hrs.toString()[hrs.toString().length - 1] == '1') && (hrs != 11L)) " $hrs hour" else " $hrs hours") else "") +
-                    (if (min > 0) (if ((min.toString()[min.toString().length - 1] == '1') && (min != 11L)) " $min minute" else " $min minutes") else "") +
-                    (if ((sec.toString()[sec.toString().length - 1] == '1') && (sec != 11L)) " $sec second" else " $sec seconds"))
+        if(Data.CurMaskWear != 0L){
+            val hrs = Data.CurMaskWear / 3600
+            val min = (Data.CurMaskWear - hrs * 3600) / 60
+            val sec = (Data.CurMaskWear - hrs * 3600) - min * 60
+            val output: String
+            if (Locale.getDefault().displayLanguage == "русский") {
+                output = ((if (hrs > 0) " " + Data.choosePluralMerge(hrs, "час", "часа", "часов") else "") +
+                        (if (min > 0) " " + Data.choosePluralMerge(min, "минута", "минуты", "минут") else "") +
+                        (" " + Data.choosePluralMerge(sec, "секунда", "секунды", "секунд")))
+            } else {
+                output = ((if (hrs > 0) (if ((hrs.toString()[hrs.toString().length - 1] == '1') && (hrs != 11L)) " $hrs hour" else " $hrs hours") else "") +
+                        (if (min > 0) (if ((min.toString()[min.toString().length - 1] == '1') && (min != 11L)) " $min minute" else " $min minutes") else "") +
+                        (if ((sec.toString()[sec.toString().length - 1] == '1') && (sec != 11L)) " $sec second" else " $sec seconds"))
+            }
+            return output
+        }else{
+            return getString(R.string.mask_perfect)
         }
-        return output
     }
 
     private fun onNewMaskSelection() {
