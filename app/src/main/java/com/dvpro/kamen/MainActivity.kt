@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         Data.sp = getSharedPreferences("settings", MODE_PRIVATE)
         createNotificationChannel(this)
         Data.TrackingStatus = Data.sp!!.getLong("TrackingStatus", -1L)
-        Data.Base_create(30,0,this)
+        Data.Base_create(30,this)
     }
 
     private fun createNotificationChannel(c: Context) {
