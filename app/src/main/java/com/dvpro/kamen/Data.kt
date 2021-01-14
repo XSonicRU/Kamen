@@ -71,7 +71,7 @@ object Data {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun Statistic_update(time: Int, context: Context, days: Int = 30) {
+    fun Statistic_update(time: Int, context: Context, days: Int = 14) {
         val sp = context.getSharedPreferences("settings_stats", Context.MODE_PRIVATE)
 
         val sp1 = sp.edit()

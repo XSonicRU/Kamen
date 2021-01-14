@@ -59,7 +59,7 @@ class DashboardFragment : Fragment() {
         }
 
         for (i in 0..days) {
-            entries.add(BarEntry(i.toFloat(), (value[i]!!.toFloat())/60))
+            entries.add(BarEntry(key[i].toFloat(), (value[i]!!.toFloat())/60))
         }
         val barDataSet = BarDataSet(entries, "Cells")
         barDataSet.setColor(Color.RED)
@@ -70,6 +70,7 @@ class DashboardFragment : Fragment() {
         data.setBarWidth(0.5f);
         chart!!.setData(data);
         chart?.invalidate(); // refresh
+
 
     }
 
