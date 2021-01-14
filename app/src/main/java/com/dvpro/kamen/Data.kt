@@ -84,7 +84,7 @@ object Data {
 
         if (j == 0L) {
             val entries = arrayListOf<String>()
-            for (i in 1..days - 1) {
+            for (i in 1..(days - 1)) {
                 val t = getDaysAgo(i).toString()
                 val k = sp.getString(t, null)
                 entries.add(k.toString())

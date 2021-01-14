@@ -38,7 +38,7 @@ class DashboardFragment : Fragment() {
         chart = root.findViewById<BarChart>(R.id.chart)
         dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
         })
-        Make_chart(4, 14, requireContext())
+        Make_chart(4, 13, requireContext())
         return root
     }
 
