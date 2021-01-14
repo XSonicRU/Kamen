@@ -108,7 +108,7 @@ object Data {
 
         val calendar = Calendar.getInstance()
 
-        val j = 5L//Date_Check(context)
+        val j = Date_Check(context)
         val i =2
 
         if(j == 0L){
